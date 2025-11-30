@@ -41,6 +41,7 @@ Bash
 
 # Instala as bibliotecas Python (yfinance, numpy)
 pip3 install yfinance numpy
+
 2. Gerar o Arquivo de Dados
 O script Python baixará os dados dos ativos e criará o arquivo binário log_returns.bin.
 
