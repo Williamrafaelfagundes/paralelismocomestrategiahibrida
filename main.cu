@@ -1,7 +1,7 @@
 // main.cu
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+#include <math.h>l
 #include <time.h>
 #include <string.h>
 #include <pthread.h>
