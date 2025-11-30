@@ -10,7 +10,6 @@ Siga os passos abaixo para instalar as dependências, compilar o código e rodar
 Certifique-se de ter o Python 3 e o CUDA Toolkit da NVIDIA instalados.
 
 Bash
-
 # Instala as bibliotecas Python (yfinance, numpy)
 pip3 install yfinance numpy
 
@@ -38,7 +37,6 @@ Siga os passos abaixo para instalar as dependências, compilar o código e rodar
 Certifique-se de ter o Python 3 e o CUDA Toolkit da NVIDIA instalados.
 
 Bash
-
 # Instala as bibliotecas Python (yfinance, numpy)
 pip3 install yfinance numpy
 
@@ -46,20 +44,20 @@ pip3 install yfinance numpy
 O script Python baixará os dados dos ativos e criará o arquivo binário log_returns.bin.
 
 Bash
-
 python3 data_fetch.py
+
 3. Compilar o Projeto
 Use o compilador nvcc para compilar o código C/CUDA, incluindo as flags para Pthreads e a biblioteca de números aleatórios (curand).
 
 Bash
-
 nvcc --expt-relaxed-constexpr main.cu -o portfolio -Xcompiler -pthread -lcurand
+
 4. Executar a Otimização
 O executável lerá os dados, fará o pré-processamento na CPU e executará a otimização massiva na GPU, exibindo o resultado final:
 
 Bash
-
 ./portfolio
+
 🎯 Resultado Esperado
 O programa exibirá o tempo de processamento para CPU e GPU, além das métricas do portfólio vencedor:
 
