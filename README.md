@@ -1,2 +1,75 @@
-# paralelismocomestrategiahibrida
- Otimização de Portfólios de Ações (Híbrido CPU/GPU)Este projeto implementa uma solução de otimização de portfólios utilizando uma arquitetura de programação paralela híbrida que combina Python, C, Pthreads (CPU) e CUDA (GPU). O objetivo é simular milhões de combinações de pesos de ativos (Portfólios Monte Carlo) para identificar o portfólio que oferece o melhor Sharpe Ratio (retorno ajustado ao risco).🚀 Arquitetura e TecnologiaO projeto foi estruturado em três fases principais para maximizar a eficiência e aproveitar os pontos fortes de cada tecnologia:FaseFerramentasTipo de ParalelismoDescrição1. Ingestão de DadosPython (yfinance, numpy)SequencialObtém dados históricos de preços de ações e calcula os retornos diários logarítmicos, salvando-os em formato binário.2. Pré-ProcessamentoC/C++ (Pthreads)Paralelismo de CPULê os dados brutos e calcula a Matriz de Covariância e os Retornos Médios Anualizados, tarefas que são computacionalmente intensivas e ideais para o paralelismo multicore da CPU.3. OtimizaçãoC/C++ (CUDA)Paralelismo de GPUTransfere a Matriz de Covariância para a memória da GPU e dispara um kernel que, em paralelo massivo, simula milhões de portfólios (Monte Carlo) e calcula o Sharpe Ratio para cada um, identificando a solução ideal.💻 Estrutura e Fluxo de ExecuçãoO fluxo do projeto é sequencial, garantindo que o processamento intensivo seja realizado no componente de hardware mais adequado:data_fetch.py (Python): Obtém $N$ ativos e gera o arquivo log_returns.bin.main.cu (CPU - Pthreads):Lê log_returns.bin.Dispara 4 threads (ou mais) para calcular a Matriz de Covariância $\mathbf{\Sigma}$ (tamanho $N \times N$) e o vetor de Retornos Médios $\mathbf{R}_{avg}$.Transferência (CUDA Host): Copia $\mathbf{\Sigma}$ e $\mathbf{R}_{avg}$ da memória do Host (CPU) para a memória do Device (GPU).monte_carlo_kernel (GPU - CUDA):Dispara $10,000,000$ de threads.Cada thread $k$ gera um vetor de pesos $\mathbf{w}_k$.Calcula a Volatilidade ($\sigma_k = \sqrt{\mathbf{w}_k^T \cdot \mathbf{\Sigma} \cdot \mathbf{w}_k}$) e o Retorno ($\mathbf{R}_k = \mathbf{w}_k^T \cdot \mathbf{R}_{avg}$).Calcula o Sharpe Ratio ($\text{SR}_k = (\mathbf{R}_k - R_f) / \sigma_k$).Usa operações atômicas (atomicCAS) para garantir que apenas o melhor Sharpe Ratio e seus pesos correspondentes sejam salvos de forma global.🔑 Tecnologias ChaveCUDA: Utilizado para paralelismo massivo (milhões de threads) na simulação Monte Carlo.Pthreads: Utilizado para paralelismo multicore na CPU para cálculos de Álgebra Linear (Covariância).yfinance & numpy: Usados para coleta de dados e manipulação numérica em Python.⚙️ Como RodarEste projeto requer o CUDA Toolkit da NVIDIA instalado.Instalar dependências Python:Bashpip3 install yfinance numpy Gerar o arquivo de dados binário:Bashpython3 data_fetch.py Compilar o código C/CUDA:Bashnvcc --expt-relaxed-constexpr main.cu -o portfolio -Xcompiler -pthread -lcurand Executar a otimização:Bash./portfolio 📊 Exemplo de Saída--- Resultado da Otimizacao --- Portfólio com melhor Sharpe Ratio (SR):  Sharpe Ratio: 0.7779  Retorno Anualizado: 23.15%  Volatilidade Anualizada: 27.19%  Pesos:   - AAPL: 11.36%   - GOOGL: 69.96%   - MSFT: 18.68%   - AMZN: 0.00%   - TSLA: 0.00% Performance: CPU (Covariance): 0.0004 s | GPU (Monte Carlo): 0.0150 s
+Otimização de Portfólios Híbrida (CPU/GPU)
+Este projeto demonstra a otimização de portfólios financeiros usando uma arquitetura de computação de alto desempenho (HPC) que combina Pthreads (CPU) e CUDA (GPU). O objetivo é encontrar a melhor alocação de pesos de ativos que maximiza o Sharpe Ratio (retorno ajustado ao risco).
+
+💡 Como FuncionaO projeto divide o trabalho de processamento em três etapas:Python (data_fetch.py): Baixa dados de ações e calcula os retornos logarítmicos.CPU Paralela (Pthreads): Calcula a Matriz de Covariância $\mathbf{\Sigma}$ e os Retornos Médios (tarefas de pré-processamento).GPU Paralela (CUDA): Executa uma simulação Monte Carlo massiva (10 milhões de portfólios) para encontrar o portfólio ideal de forma extremamente rápida.
+
+⚙️ Configuração e Execução
+Siga os passos abaixo para instalar as dependências, compilar o código e rodar o otimizador.
+
+1. Instalar Dependências
+Certifique-se de ter o Python 3 e o CUDA Toolkit da NVIDIA instalados.
+
+Bash
+
+# Instala as bibliotecas Python (yfinance, numpy)
+pip3 install yfinance numpy
+
+Claro! Aqui está uma descrição simples e direta para o seu README.md, focada no propósito do projeto e nas instruções para rodá-lo, como você pediu.
+
+🚀 Otimização de Portfólios Híbrida (CPU/GPU)
+Este projeto demonstra a otimização de portfólios financeiros usando uma arquitetura de computação de alto desempenho (HPC) que combina Pthreads (CPU) e CUDA (GPU). O objetivo é encontrar a melhor alocação de pesos de ativos que maximiza o Sharpe Ratio (retorno ajustado ao risco).
+
+💡 Como Funciona
+O projeto divide o trabalho de processamento em três etapas:
+
+Python (data_fetch.py): Baixa dados de ações e calcula os retornos logarítmicos.
+
+CPU Paralela (Pthreads): Calcula a Matriz de Covariância Σ e os Retornos Médios (tarefas de pré-processamento).
+
+GPU Paralela (CUDA): Executa uma simulação Monte Carlo massiva (10 milhões de portfólios) para encontrar o portfólio ideal de forma extremamente rápida.
+
+
+Shutterstock
+Explorar
+⚙️ Configuração e Execução
+Siga os passos abaixo para instalar as dependências, compilar o código e rodar o otimizador.
+
+1. Instalar Dependências
+Certifique-se de ter o Python 3 e o CUDA Toolkit da NVIDIA instalados.
+
+Bash
+
+# Instala as bibliotecas Python (yfinance, numpy)
+pip3 install yfinance numpy
+2. Gerar o Arquivo de Dados
+O script Python baixará os dados dos ativos e criará o arquivo binário log_returns.bin.
+
+Bash
+
+python3 data_fetch.py
+3. Compilar o Projeto
+Use o compilador nvcc para compilar o código C/CUDA, incluindo as flags para Pthreads e a biblioteca de números aleatórios (curand).
+
+Bash
+
+nvcc --expt-relaxed-constexpr main.cu -o portfolio -Xcompiler -pthread -lcurand
+4. Executar a Otimização
+O executável lerá os dados, fará o pré-processamento na CPU e executará a otimização massiva na GPU, exibindo o resultado final:
+
+Bash
+
+./portfolio
+🎯 Resultado Esperado
+O programa exibirá o tempo de processamento para CPU e GPU, além das métricas do portfólio vencedor:
+
+--- Resultado da Otimizacao ---
+Portfólio com melhor Sharpe Ratio (SR):
+ Sharpe Ratio: X.XXXX
+ Retorno Anualizado: XX.XX%
+ Volatilidade Anualizada: XX.XX%
+ Pesos:
+  - AAPL: XX.XX%
+  - GOOGL: XX.XX%
+  - MSFT: XX.XX%
+  ...
+Performance: CPU (Covariance): X.XXXX s | GPU (Monte Carlo): X.XXXX s
