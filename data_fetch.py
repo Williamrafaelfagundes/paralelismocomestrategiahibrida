@@ -4,8 +4,8 @@ import numpy as np
 import datetime as dt
 import struct
 
-# Tickers para otimização - AGORA COM 5 ATIVOS
-TICKERS = ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"] # Adicionados AMZN e TSLA
+# Tickers para otimização - COM 5 ATIVOS
+TICKERS = ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"]
 START_DATE = (dt.datetime.now() - dt.timedelta(days=365 * 5)).strftime('%Y-%m-%d') # Últimos 5 anos
 END_DATE = dt.datetime.now().strftime('%Y-%m-%d')
 OUTPUT_FILE = "log_returns.bin"

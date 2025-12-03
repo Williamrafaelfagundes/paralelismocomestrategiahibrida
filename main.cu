@@ -136,7 +136,7 @@ int read_binary_data(const char *filename) {
     printf("Numero de ativos: %d\n", h_num_assets);
     printf("Numero de dias de historico: %d\n", h_num_days);
 
-    // 2. Ler Tickers
+    // 2. Ler Tickers(le siglas das ações)
     h_tickers = (char**)malloc(h_num_assets * sizeof(char*));
     for (int i = 0; i < h_num_assets; i++) {
         int len;
