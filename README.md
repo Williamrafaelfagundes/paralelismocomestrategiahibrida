@@ -1,74 +1,41 @@
-Otimização de Portfólios Híbrida (CPU/GPU)
-Este projeto demonstra a otimização de portfólios financeiros usando uma arquitetura de computação de alto desempenho (HPC) que combina Pthreads (CPU) e CUDA (GPU). O objetivo é encontrar a melhor alocação de pesos de ativos que maximiza o Sharpe Ratio (retorno ajustado ao risco).
+🎓 Otimização de Portfólios de Ações: Comparativo Paralelo vs. Sequencial
+Este projeto foi desenvolvido como parte de um trabalho de faculdade focado em Computação de Alto Desempenho (HPC). O objetivo principal é demonstrar o ganho de performance ao executar tarefas financeiras complexas usando o paralelismo (CPU e GPU) em comparação com uma execução tradicional sequencial (CPU pura).
 
-💡 Como FuncionaO projeto divide o trabalho de processamento em três etapas:Python (data_fetch.py): Baixa dados de ações e calcula os retornos logarítmicos.CPU Paralela (Pthreads): Calcula a Matriz de Covariância $\mathbf{\Sigma}$ e os Retornos Médios (tarefas de pré-processamento).GPU Paralela (CUDA): Executa uma simulação Monte Carlo massiva (10 milhões de portfólios) para encontrar o portfólio ideal de forma extremamente rápida.
+A tarefa em questão é a Otimização de Portfólios de Ações através da Simulação Monte Carlo.
 
-⚙️ Configuração e Execução
-Siga os passos abaixo para instalar as dependências, compilar o código e rodar o otimizador.
+💡 A Grande Ideia (Descomplicada)
+- Problema: Encontrar a melhor combinação de pesos para 5 ações que oferece o maior retorno ajustado ao risco (Sharpe Ratio).
+- Solução: Simular milhões de portfólios aleatórios e comparar os resultados.
+- Comparativo:Versão Sequencial:
+   A CPU faz todos os passos, um de cada vez.
+   Versão Paralela/Híbrida: A CPU usa múltiplos núcleos (Pthreads) para o pré-processamento (Matriz de Covariância), e a GPU (CUDA) usa milhares de núcleos simultâneos para a simulação Monte Carlo.
 
-1. Instalar Dependências
-Certifique-se de ter o Python 3 e o CUDA Toolkit da NVIDIA instalados.
+  O resultado esperado é um ganho massivo de velocidade na versão Paralela, que consegue analisar 10 milhões de portfólios em frações de segundo.
 
-Bash
-# Instala as bibliotecas Python (yfinance, numpy)
-pip3 install yfinance numpy
+⚙️ Guia Rápido: Como Rodar o ProjetoSiga estes 3 passos simples para rodar ambas as versões e fazer a sua comparação.
 
-Claro! Aqui está uma descrição simples e direta para o seu README.md, focada no propósito do projeto e nas instruções para rodá-lo, como você pediu.
+1. Preparação: Baixar os Dados (Python)
+Este passo baixa o histórico de preços dos 5 ativos e cria o arquivo log_returns.bin, necessário para as versões C/C++ rodarem.
 
-🚀 Otimização de Portfólios Híbrida (CPU/GPU)
-Este projeto demonstra a otimização de portfólios financeiros usando uma arquitetura de computação de alto desempenho (HPC) que combina Pthreads (CPU) e CUDA (GPU). O objetivo é encontrar a melhor alocação de pesos de ativos que maximiza o Sharpe Ratio (retorno ajustado ao risco).
-
-💡 Como Funciona
-O projeto divide o trabalho de processamento em três etapas:
-
-Python (data_fetch.py): Baixa dados de ações e calcula os retornos logarítmicos.
-
-CPU Paralela (Pthreads): Calcula a Matriz de Covariância Σ e os Retornos Médios (tarefas de pré-processamento).
-
-GPU Paralela (CUDA): Executa uma simulação Monte Carlo massiva (10 milhões de portfólios) para encontrar o portfólio ideal de forma extremamente rápida.
-
-
-Shutterstock
-Explorar
-⚙️ Configuração e Execução
-Siga os passos abaixo para instalar as dependências, compilar o código e rodar o otimizador.
-
-1. Instalar Dependências
-Certifique-se de ter o Python 3 e o CUDA Toolkit da NVIDIA instalados.
-
-Bash
-# Instala as bibliotecas Python (yfinance, numpy)
-pip3 install yfinance numpy
-
-2. Gerar o Arquivo de Dados
-O script Python baixará os dados dos ativos e criará o arquivo binário log_returns.bin.
-
-Bash
+Bash#
+Baixa dados, calcula retornos e gera o arquivo binário
 python3 data_fetch.py
 
-3. Compilar o Projeto
-Use o compilador nvcc para compilar o código C/CUDA, incluindo as flags para Pthreads e a biblioteca de números aleatórios (curand).
+3. Rodar a Versão Sequencial (CPU Pura)
+Esta versão compila e executa o código que faz o trabalho um passo de cada vez.
+Compilar g++ main_seq.c -o portfolio_seq -lm
 
-Bash
-nvcc --expt-relaxed-constexpr main.cu -o portfolio -Xcompiler -pthread -lcurand
+Executar ./portfolio_seq
 
-4. Executar a Otimização
-O executável lerá os dados, fará o pré-processamento na CPU e executará a otimização massiva na GPU, exibindo o resultado final:
+Resultado: Você verá o tempo total de execução na CPU (em segundos) para 1 milhão de simulações.
 
-Bash
-./portfolio
+3. Rodar a Versão Paralela (CPU + GPU)
+  
+Esta versão compila e executa o código que divide o trabalho entre CPU (Covariância) e GPU (Monte Carlo).
 
-🎯 Resultado Esperado
-O programa exibirá o tempo de processamento para CPU e GPU, além das métricas do portfólio vencedor:
+Compilar nvcc --expt-relaxed-constexpr main.cu -o portfolio -Xcompiler -pthread -lcurand
+Executar ./portfolio
 
---- Resultado da Otimizacao ---
-Portfólio com melhor Sharpe Ratio (SR):
- Sharpe Ratio: X.XXXX
- Retorno Anualizado: XX.XX%
- Volatilidade Anualizada: XX.XX%
- Pesos:
-  - AAPL: XX.XX%
-  - GOOGL: XX.XX%
-  - MSFT: XX.XX%
-  ...
-Performance: CPU (Covariance): X.XXXX s | GPU (Monte Carlo): X.XXXX s
+Resultado: Você verá os tempos de execução separados para a CPU e a GPU, que será muito mais rápido (em milissegundos) para 10 milhões de simulações.
+
+📈 Conclusão da AnáliseAo comparar os tempos de execução, o projeto demonstra de forma clara a importância e a eficiência da computação paralela para resolver problemas complexos na área de finanças.
